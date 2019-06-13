@@ -6,7 +6,7 @@ import "./App.css"
 const ROOT_EVENT_URL = 'wss://stream.pushbullet.com/websocket/';
 const PUSHBULLET_CLIENT_ID = "yV56z5euFLaZM8byC87MWhq3k9WKmprK";
 const ROOT_URL = 'https://notmyphone.com/';
-const REDIRECT_URL = `https://www.pushbullet.com/authorize?client_id=${PUSHBULLET_CLIENT_ID}&redirect_uri=${encodeURIComponent(ROOT_URL)}%2Fauth&response_type=code&scope=everything`
+const REDIRECT_URL = `https://www.pushbullet.com/authorize?client_id=${PUSHBULLET_CLIENT_ID}&redirect_uri=${encodeURIComponent(ROOT_URL+'auth')}&response_type=code&scope=everything`
 
 class Chat extends Component {
   state = {
