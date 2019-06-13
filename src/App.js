@@ -1,17 +1,26 @@
 import React, { Component } from 'react'
 import Message from './Message'
-import "./App.css";
+import "./App.css"
 
-const AUTH_KEY = '';
-const EVENT_URL = 'wss://stream.pushbullet.com/websocket/'+AUTH_KEY;
 
+const ROOT_EVENT_URL = 'wss://stream.pushbullet.com/websocket/';
+const PUSHBULLET_CLIENT_ID = "yV56z5euFLaZM8byC87MWhq3k9WKmprK";
+const ROOT_URL = 'https://notmyphone.com/';
+const REDIRECT_URL = `https://www.pushbullet.com/authorize?client_id=${PUSHBULLET_CLIENT_ID}&redirect_uri=${encodeURIComponent(ROOT_URL)}%2Fauth&response_type=code&scope=everything`
 
 class Chat extends Component {
   state = {
     messages: [],
   }
 
-  ws = new WebSocket(EVENT_URL)
+  // Picks up the event url via auth in the cookie (or querystring if testing locally)
+  getEventURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const auth = urlParams.get('auth');
+    return ROOT_EVENT_URL + auth;
+  }
+
+  ws = new WebSocket(this.getEventURL())
 
   componentDidMount() {
     this.ws.onopen = () => {
@@ -33,7 +42,7 @@ class Chat extends Component {
       console.log('disconnected')
       // automatically try to reconnect on connection loss
       this.setState({
-        ws: new WebSocket(EVENT_URL),
+        ws: new WebSocket(this.getEventURL()),
       })
     }
   }
@@ -63,7 +72,7 @@ function App() {
   return (
     <div className="App">
         <a
-          href="https://www.pushbullet.com/authorize?client_id=yV56z5euFLaZM8byC87MWhq3k9WKmprK&redirect_uri=https%3A%2F%2Fpiclock.lianza.workers.dev%2Fauth&response_type=code&scope=everything"
+          href={REDIRECT_URL}
           rel="noopener noreferrer"
         >
           Pushbullet Login
