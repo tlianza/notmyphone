@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
 import Message from './Message'
+import FlipClock from 'flipclock';
+import $ from 'jquery'; 
 import "./App.css"
 
 
 const ROOT_EVENT_URL = 'wss://stream.pushbullet.com/websocket/';
 const PUSHBULLET_CLIENT_ID = "yV56z5euFLaZM8byC87MWhq3k9WKmprK";
 const ROOT_URL = 'https://notmyphone.com/';
-const REDIRECT_URL = `https://www.pushbullet.com/authorize?client_id=${PUSHBULLET_CLIENT_ID}&redirect_uri=${encodeURIComponent(ROOT_URL+'auth')}&response_type=code&scope=everything`
+const REDIRECT_URL = `https://www.pushbullet.com/authorize?client_id=${PUSHBULLET_CLIENT_ID}&redirect_uri=${encodeURIComponent(ROOT_URL+'auth')}&response_type=code&scope=everything`;
 
 class Chat extends Component {
   state = {
     messages: [],
-  }
+  };
 
   // Picks up the event url via auth in the cookie (or querystring if testing locally)
   getEventURL() {
@@ -68,19 +70,49 @@ class Chat extends Component {
   }
 }
 
+class Clock extends Component {
+
+  componentDidMount() {
+    this.$el = $(this.el);
+    console.log("MOUNTED");
+    console.log(this.el);
+
+    var date = new Date();
+    debugger;
+    const clock = new FlipClock(this.el, {
+       face: 'TwelveHourClock',
+       showSeconds: false
+    });
+    clock.start();
+
+  }
+
+  componentWillUnmount() {
+    //this.$el.somePlugin('destroy');
+  }
+
+  render() {
+    return (
+      <div>
+        <div className="clock" ref={el => this.el = el}></div>
+      </div>
+    )
+  }
+}
+
 function App() {
   return (
     <div className="App">
-        <a
+      <Clock />
+      <Chat />
+      <a
           href={REDIRECT_URL}
           rel="noopener noreferrer"
-        >
-          Pushbullet Login
-        </a>
-      <Chat />
+      >
+        Pushbullet Login
+      </a>
     </div>
   );
 }
-
 
 export default App;
