@@ -132,7 +132,7 @@ class RefreshButton extends Component {
 
   render() {
     return (
-        <Button variant="light" size="sm" onClick={this.handleClick}>Reload</Button>
+        <Button variant="light" size="sm" onClick={this.handleClick}>&#8635;</Button>
     )
   }
 }
@@ -154,9 +154,10 @@ function App() {
     <div className="App container">
         <Clock />
         <Notifications />
-        <LoginButton />&nbsp;
-        <RefreshButton />
-
+        <div id="button-tray" class="fixed-bottom">
+          <LoginButton />&nbsp;
+          <RefreshButton />
+        </div>
     </div>
   );
 }

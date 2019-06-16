@@ -12,6 +12,11 @@ body {
 .flip-clock {
   font-size: 4vw;
 }
+#button-tray {
+  text-align:right;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
 
 /* We want a row even on small screens */
 .card-deck {
