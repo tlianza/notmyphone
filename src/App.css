@@ -1,5 +1,10 @@
 body {
   background-color: #000000;
   color: #ffffff;
-  padding: 1em;
+}
+.clock {
+  margin: auto;
+}
+.flip-clock {
+  font-size: 4vw;
 }

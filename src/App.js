@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import Message from './Message'
 import FlipClock from 'flipclock';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container'
 import $ from 'jquery'; 
 import "./App.css"
-
 
 const ROOT_EVENT_URL = 'wss://stream.pushbullet.com/websocket/';
 const PUSHBULLET_CLIENT_ID = "yV56z5euFLaZM8byC87MWhq3k9WKmprK";
@@ -41,7 +42,7 @@ class Chat extends Component {
     }
 
     this.ws.onclose = () => {
-      console.log('disconnected')
+      console.log('websocket disconnected')
       // automatically try to reconnect on connection loss
       this.setState({
         ws: new WebSocket(this.getEventURL()),
@@ -74,17 +75,11 @@ class Clock extends Component {
 
   componentDidMount() {
     this.$el = $(this.el);
-    console.log("MOUNTED");
-    console.log(this.el);
-
-    var date = new Date();
-    debugger;
     const clock = new FlipClock(this.el, {
        face: 'TwelveHourClock',
        showSeconds: false
     });
     clock.start();
-
   }
 
   componentWillUnmount() {
@@ -100,18 +95,42 @@ class Clock extends Component {
   }
 }
 
+class RefreshButton extends Component {
+  handleClick() {
+    window.location.reload();
+  }
+
+  render() {
+    return (
+        <Button variant="light" size="sm" onClick={this.handleClick}>Reload</Button>
+    )
+  }
+}
+
+class LoginButton extends Component {
+  handleClick() {
+    window.location.href = REDIRECT_URL;
+  }
+
+  render() {
+    return (
+        <Button variant="light" size="sm" onClick={this.handleClick}>Login</Button>
+    )
+  }
+}
+
 function App() {
   return (
+      <Container>
     <div className="App">
-      <Clock />
-      <Chat />
-      <a
-          href={REDIRECT_URL}
-          rel="noopener noreferrer"
-      >
-        Pushbullet Login
-      </a>
+
+        <Clock />
+        <Chat />
+        <LoginButton />&nbsp;
+        <RefreshButton />
+
     </div>
+      </Container>
   );
 }
 
