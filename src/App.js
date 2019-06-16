@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import Message from './Message'
 import FlipClock from 'flipclock';
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container'
 import $ from 'jquery'; 
 import "./App.css"
 
@@ -10,8 +9,9 @@ const ROOT_EVENT_URL = 'wss://stream.pushbullet.com/websocket/';
 const PUSHBULLET_CLIENT_ID = "yV56z5euFLaZM8byC87MWhq3k9WKmprK";
 const ROOT_URL = 'https://notmyphone.com/';
 const REDIRECT_URL = `https://www.pushbullet.com/authorize?client_id=${PUSHBULLET_CLIENT_ID}&redirect_uri=${encodeURIComponent(ROOT_URL+'auth')}&response_type=code&scope=everything`;
+const NOTIFICATON_LIMIT = 5;
 
-class Chat extends Component {
+class Notifications extends Component {
   state = {
     messages: [],
   };
@@ -36,8 +36,18 @@ class Chat extends Component {
       // the list of messages
       const message = JSON.parse(evt.data);
       if (message.type !== "push") { return; } //only respond to pushes
+
       console.log("Event is a push...")
       console.log(message);
+
+      //if the push is a dismissal, use it to pull messages off the queue
+      if (message.push.type === "dismissal") {
+        this.dismissMessage(message.push);
+        return;
+      }
+
+
+      message.push.arrivalTime = new Date();
       this.addMessage(message.push)
     }
 
@@ -50,20 +60,40 @@ class Chat extends Component {
     }
   }
 
-  addMessage = message => 
-    this.setState(state => ({ messages: [message, ...state.messages] }))
+  dismissMessage = message => {
+    console.log("Asked to dismiss something.");
+    var currMessages = this.state.messages;
+    for( var i = currMessages.length; i--;) {
+      let msg = currMessages[i];
+      if ( msg.notification_id === message.notification_id && msg.notification_tag === message.notification_tag) {
+        currMessages.splice(i, 1);
+      }
+    }
+    this.setState(state => ({messages: currMessages}));
+  }
+
+  addMessage = message => {
+    if (this.state.messages.length >= NOTIFICATON_LIMIT) {
+      let deleted = this.state.messages.shift();
+      console.log("Shifted a message out: ");
+      console.log(deleted);
+    }
+
+    this.setState(state => ({messages: [message, ...state.messages]}))
+  }
 
   
 
   render() {
     return (
-      <div>
+      <div className="notifications card-deck">
         {this.state.messages.map((message, index) =>
           <Message
             key={index}
             message={message.body}
             name={message.application_name}
             icon={message.icon}
+            arrivalTime={message.arrivalTime}
           />,
         )}
       </div>
@@ -121,16 +151,13 @@ class LoginButton extends Component {
 
 function App() {
   return (
-      <Container>
-    <div className="App">
-
+    <div className="App container">
         <Clock />
-        <Chat />
+        <Notifications />
         <LoginButton />&nbsp;
         <RefreshButton />
 
     </div>
-      </Container>
   );
 }
 

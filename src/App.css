@@ -2,9 +2,40 @@ body {
   background-color: #000000;
   color: #ffffff;
 }
+.App {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
 .clock {
   margin: auto;
 }
 .flip-clock {
   font-size: 4vw;
+}
+
+/* We want a row even on small screens */
+.card-deck {
+  flex-direction: row;
+}
+
+.card {
+  margin-right: 5px;
+}
+
+.card h5 {
+  font-size: .8rem;
+}
+
+div.notifications .card-img-overlay {
+  padding: .5rem;
+}
+
+div.notifications .card-footer {
+  padding: .2rem;
+}
+
+div.notifications .card {
+  max-width: 6rem;
+  background-color: #1b1e21;
+  font-size: .7rem;
 }
