@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import Message from './Message'
 import FlipClock from 'flipclock';
 import Button from 'react-bootstrap/Button';
-import $ from 'jquery'; 
 import "./App.css"
 
 const ROOT_EVENT_URL = 'wss://stream.pushbullet.com/websocket/';
@@ -104,16 +103,24 @@ class Notifications extends Component {
 class Clock extends Component {
 
   componentDidMount() {
-    this.$el = $(this.el);
-    const clock = new FlipClock(this.el, {
-       face: 'TwelveHourClock',
-       showSeconds: false
+    this.updateTime(this.el);
+    // to prevent drift, just re-update the time periodically
+    // 5 minutes = 1000*60*5 = 30,000
+    window.setInterval(this.updateTime, 30000, this.el);
+  }
+
+  updateTime(el) {
+    console.log("Updating time...");
+    el.innerHTML = "";
+    const clock = new FlipClock(el, {
+      face: 'TwelveHourClock',
+      showSeconds: false
     });
     clock.start();
   }
 
   componentWillUnmount() {
-    //this.$el.somePlugin('destroy');
+    console.log("Clock component unmounted");
   }
 
   render() {
@@ -154,7 +161,7 @@ function App() {
     <div className="App container">
         <Clock />
         <Notifications />
-        <div id="button-tray" class="fixed-bottom">
+        <div id="button-tray" className="fixed-bottom">
           <LoginButton />&nbsp;
           <RefreshButton />
         </div>
