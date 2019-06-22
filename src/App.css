@@ -2,17 +2,23 @@ body {
   background-color: #000000;
   color: #ffffff;
 }
+
 .App {
   margin-top: 15px;
   margin-bottom: 15px;
 }
+
 .clock {
   margin: auto;
   white-space: nowrap;
   text-align: center;
 }
-time {
+
+.clock time {
   font-size: 5em;
+}
+
+time {
   font-family: Orbitron;
 }
 #button-tray {
@@ -21,29 +27,20 @@ time {
   margin-bottom: 15px;
 }
 
-/* We want a row even on small screens */
-.card-deck {
-  flex-direction: row;
+/* Want room to fit all columns on small screen */
+.col {
+  padding-left: 0px;
 }
 
-.card {
-  margin-right: 5px;
+div.notifications .card {
+  background-color: #1b1e21;
+  font-size: .7rem;
 }
 
 .card h5 {
   font-size: .8rem;
 }
 
-div.notifications .card-img-overlay {
-  padding: .5rem;
-}
-
 div.notifications .card-footer {
   padding: .2rem;
-}
-
-div.notifications .card {
-  max-width: 6rem;
-  background-color: #1b1e21;
-  font-size: .7rem;
 }

@@ -85,16 +85,19 @@ class Notifications extends Component {
 
   render() {
     return (
-      <div className="notifications card-deck">
+      <div className="notifications container-fluid">
+        <div className="row">
         {this.state.messages.map((message, index) =>
           <Message
             key={index}
             message={message.body}
+            title={message.title}
             name={message.application_name}
             icon={message.icon}
             arrivalTime={message.arrivalTime}
           />,
         )}
+        </div>
       </div>
     )
   }
@@ -103,7 +106,7 @@ class Notifications extends Component {
 class MyClock extends Component {
   render() {
     return (
-        <div class="clock">
+        <div className="clock">
           <Clock format={'hh:mm a'} ticking={true}  />
         </div>
     )
@@ -136,7 +139,7 @@ class LoginButton extends Component {
 
 function App() {
   return (
-    <div className="App container">
+    <div className="App container-fluid">
         <MyClock />
         <Notifications />
         <div id="button-tray" className="fixed-bottom">
