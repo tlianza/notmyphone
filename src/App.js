@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Message from './Message'
-import FlipClock from 'flipclock';
+import Clock from 'react-live-clock';
 import Button from 'react-bootstrap/Button';
 import "./App.css"
 
@@ -100,34 +100,12 @@ class Notifications extends Component {
   }
 }
 
-class Clock extends Component {
-
-  componentDidMount() {
-    this.updateTime(this.el);
-    // to prevent drift, just re-update the time periodically
-    // 5 minutes = 1000*60*5 = 30,000
-    window.setInterval(this.updateTime, 30000, this.el);
-  }
-
-  updateTime(el) {
-    console.log("Updating time...");
-    el.innerHTML = "";
-    const clock = new FlipClock(el, {
-      face: 'TwelveHourClock',
-      showSeconds: false
-    });
-    clock.start();
-  }
-
-  componentWillUnmount() {
-    console.log("Clock component unmounted");
-  }
-
+class MyClock extends Component {
   render() {
     return (
-      <div>
-        <div className="clock" ref={el => this.el = el}></div>
-      </div>
+        <div class="clock">
+          <Clock format={'hh:mm a'} ticking={true}  />
+        </div>
     )
   }
 }
@@ -159,7 +137,7 @@ class LoginButton extends Component {
 function App() {
   return (
     <div className="App container">
-        <Clock />
+        <MyClock />
         <Notifications />
         <div id="button-tray" className="fixed-bottom">
           <LoginButton />&nbsp;
