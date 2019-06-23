@@ -1,28 +1,13 @@
 import React, { Component } from 'react'
 import Message from "./Message";
-const ROOT_EVENT_URL = 'wss://stream.pushbullet.com/websocket/';
 
 class Notifications extends Component {
     state = {
         messages: [],
     };
 
-    // Picks up the event url via auth in the cookie (or querystring if testing locally)
-    getEventURL() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const auth = urlParams.get('auth');
-        return ROOT_EVENT_URL + auth;
-    }
-
-    ws = new WebSocket(this.getEventURL())
-
     componentDidMount() {
-        this.ws.onopen = () => {
-            // on connecting, do nothing but log it to the console
-            console.log('connected')
-        }
-
-        this.ws.onmessage = evt => {
+        this.props.websocket.onmessage = evt => {
             // on receiving a message, see if it's a real push and if so add it to
             // the list of messages
             const message = JSON.parse(evt.data);
@@ -40,14 +25,6 @@ class Notifications extends Component {
 
             message.push.arrivalTime = new Date();
             this.addMessage(message.push)
-        }
-
-        this.ws.onclose = () => {
-            console.log('websocket disconnected')
-            // automatically try to reconnect on connection loss
-            this.setState({
-                ws: new WebSocket(this.getEventURL()),
-            })
         }
     }
 
