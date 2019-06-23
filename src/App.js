@@ -81,8 +81,6 @@ class Notifications extends Component {
     this.setState(state => ({messages: [message, ...state.messages]}))
   }
 
-  
-
   render() {
     return (
       <div className="notifications container-fluid">

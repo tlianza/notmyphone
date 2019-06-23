@@ -16,11 +16,9 @@ body {
 
 .clock time {
   font-size: 5em;
-}
-
-time {
   font-family: Orbitron;
 }
+
 #button-tray {
   text-align:right;
   margin-right: 15px;
@@ -43,4 +41,9 @@ div.notifications .card {
 
 div.notifications .card-footer {
   padding: .2rem;
+}
+
+/* Modal when you click a notification */
+.modal-content {
+  background-color: #1b1e21;
 }
