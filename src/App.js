@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Notifications from './Notifications'
 import Clock from 'react-live-clock';
 import Button from 'react-bootstrap/Button';
+import * as Sentry from '@sentry/browser';
 import "./App.css"
 
 const PUSHBULLET_CLIENT_ID = "yV56z5euFLaZM8byC87MWhq3k9WKmprK";
@@ -9,6 +10,8 @@ const ROOT_URL = 'https://notmyphone.com/';
 const REDIRECT_URL = `https://www.pushbullet.com/authorize?client_id=${PUSHBULLET_CLIENT_ID}&redirect_uri=${encodeURIComponent(ROOT_URL+'auth')}&response_type=code&scope=everything`;
 const ROOT_EVENT_URL = 'wss://stream.pushbullet.com/websocket/';
 const NOTIFICATON_LIMIT = 5;
+
+Sentry.init({dsn: "https://d2ff761a0ad0419eb41f284c3daea915@sentry.io/1489499"});
 
 class MyClock extends Component {
   render() {
