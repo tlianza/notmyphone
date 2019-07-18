@@ -57,10 +57,31 @@ class App extends Component {
     };
   }
 
+  static getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) === ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) === 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
   // Picks up the event url via auth in the cookie (or querystring if testing locally)
   getEventURL() {
     const urlParams = new URLSearchParams(window.location.search);
-    const auth = urlParams.get('auth');
+    let auth = urlParams.get('auth');
+
+    if ((auth === null || auth.length === 0)) {
+      auth = App.getCookie('auth');
+    }
+
     return ROOT_EVENT_URL + auth;
   }
 
