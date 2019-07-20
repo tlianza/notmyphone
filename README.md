@@ -52,3 +52,6 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ### `yarn run deploy`
 
 Deploy the built, static assets to github
+
+## Credits
+- Alarm Clock favicon by Caesar Rizky Kurniawan from the Noun Project
