@@ -113,13 +113,16 @@ class App extends Component {
           <MyClock/>
           <Notifications limit={NOTIFICATON_LIMIT} websocket={this.state.ws}/>
           <div id="button-tray" className="fixed-bottom">
+            <div className="float-left">
             {
               this.state.connected
                   ? null
                   : <LoginButton />
             }
-            &nbsp;
-            <RefreshButton/>
+            </div>
+            <div className="float-right">
+              <RefreshButton/>
+            </div>
           </div>
         </div>
     );

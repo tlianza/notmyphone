@@ -20,9 +20,7 @@ body {
 }
 
 #button-tray {
-  text-align:right;
-  margin-right: 15px;
-  margin-bottom: 15px;
+  margin: 15px;
 }
 
 /* Want room to fit all columns on small screen */
