@@ -51,8 +51,13 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+    let ws = new WebSocket(this.getEventURL());
+    ws.addEventListener('error', function (event) {
+      console.log('WebSocket error: ', event);
+      Sentry.captureEvent(event);
+    });
     this.state = {
-      ws: new WebSocket(this.getEventURL()),
+      ws: ws,
       connected: false
     };
   }
@@ -82,6 +87,11 @@ class App extends Component {
       auth = App.getCookie('auth');
     }
 
+    if ((auth === null || auth.length === 0)) {
+      Sentry.captureMessage("No auth found in either param or cookie.");
+      console.log("No auth found in either param or cookie.");
+    }
+
     return ROOT_EVENT_URL + auth;
   }
 
@@ -100,10 +110,16 @@ class App extends Component {
     this.ws.onclose = () => {
       console.log('websocket disconnected');
       // automatically try to reconnect on connection loss
+      let ws = new WebSocket(this.getEventURL());
+      ws.addEventListener('error', function (event) {
+        console.log('WebSocket error: ', event);
+        Sentry.captureEvent(event);
+      });
       this.setState({
-        ws: new WebSocket(this.getEventURL()),
+        ws: ws,
         connected: false
       })
+
     }
   }
 
