@@ -52,10 +52,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     let ws = new WebSocket(this.getEventURL());
-    ws.addEventListener('error', function (event) {
-      console.log('WebSocket error: ', event);
-      Sentry.captureEvent(event);
-    });
     this.state = {
       ws: ws,
       connected: false
@@ -95,33 +91,82 @@ class App extends Component {
     return ROOT_EVENT_URL + auth;
   }
 
-  ws = new WebSocket(this.getEventURL())
+  reconnectTimeout = 250;
 
   componentDidMount() {
+    this.connect();
+  }
+
+  connect = () => {
+    console.debug("Attempting to connect websocket...");
+
+    // This is hacktackular, but since we already have a websocket from the constructor (probably)
+    // which probably has an event handler attached to it, make sure we don't lose that.
+    const { ws } = this.state;
+    if (this.wsIsConnected()){
+      this.ws = ws; //existing, connected, constructor-created WS
+    } else {
+      //if there is an existing ws, throw it away but keep its onmessage event
+      let onmessageFunc = null;
+      if (ws){
+        onmessageFunc = ws.onmessage;
+      }
+      this.ws = new WebSocket(this.getEventURL());
+      this.ws.onmessage = onmessageFunc;
+    }
+
+    let that = this; // cache the this
+    var connectInterval;
+
     this.ws.onopen = () => {
       // on connecting, do nothing but log it to the console
-      console.log('connected')
+      console.log('connected');
       this.setState({
         ws: this.ws,
         connected: true
-      })
+      });
+      that.reconnectTimeout = 250; // reset timer to 250 on open of websocket connection
+      clearTimeout(connectInterval); // clear Interval on on open of websocket connection
     }
 
-    this.ws.onclose = () => {
-      console.log('websocket disconnected');
-      // automatically try to reconnect on connection loss
-      let ws = new WebSocket(this.getEventURL());
-      ws.addEventListener('error', function (event) {
-        console.log('WebSocket error: ', event);
-        Sentry.captureEvent(event);
-      });
-      this.setState({
-        ws: ws,
-        connected: false
-      })
+    // websocket onerror event listener
+    this.ws.onerror = err => {
+      console.error(
+          "Socket encountered error: ",
+          err.message,
+          "Closing socket"
+      );
+      Sentry.captureEvent(err);
+      that.ws.close();
+    };
 
+    this.ws.onclose = e => {
+      let nextCheckMs = Math.min(10000, that.reconnectTimeout);
+      console.log(
+          `Socket is closed. Reconnect will be attempted in ${nextCheckMs} ms.`,
+          e.reason
+      );
+      this.setState({
+        ws: this.ws,
+        connected: false
+      });
+      that.reconnectTimeout = that.reconnectTimeout + that.reconnectTimeout; //increment retry interval
+      connectInterval = setTimeout(this.check, nextCheckMs); //call check function after timeout
     }
   }
+
+  /**
+   * utilited by the @function connect to check if the connection is close, if so attempts to reconnect
+   */
+  check = () => {
+    console.debug("Checking ws state...");
+    if(!this.wsIsConnected()) this.connect(); //check if websocket instance is closed, if so call `connect` function.
+  };
+
+  wsIsConnected = () => {
+    const { ws } = this.state;
+    return (ws && ws.readyState != WebSocket.CLOSED);
+  };
 
   render() {
     return (
