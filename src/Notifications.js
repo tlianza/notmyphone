@@ -22,6 +22,24 @@ class Notifications extends Component {
                 return;
             }
 
+            //if the message isn't renderable, discard it
+            if (!message.push.body && (!message.push.notifications || message.push.notifications.length === 0)) {
+                console.log("Event was not renderable. Ignoring.");
+                console.log(message.notifications);
+                return;
+            }
+
+            if (message.push.notifications) {
+                if (!message.push.body) {
+                    message.push.body = message.push.notifications[0].body;
+                }
+                if (!message.push.title) {
+                    message.push.title = message.push.notifications[0].title;
+                }
+                if (!message.push.icon) {
+                    message.push.icon = message.push.notifications[0].image_url;
+                }
+            }
 
             message.push.arrivalTime = new Date();
             this.addMessage(message.push)
@@ -57,7 +75,7 @@ class Notifications extends Component {
                     {this.state.messages.map((message, index) =>
                         <Message
                             key={index}
-                            message={message.body}
+                            body={message.body}
                             title={message.title}
                             name={message.application_name}
                             icon={message.icon}

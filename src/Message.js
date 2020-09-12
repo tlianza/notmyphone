@@ -34,7 +34,7 @@ class Message extends React.Component {
                     <div className="card text-white flex-fill" onClick={this.handleShow} data-toggle="modal" data-target="#exampleModalCenter">
                         <div className="card-text">
                             <h5>{this.props.title}</h5>
-                            {this.props.message}
+                            {this.props.body}
                         </div>
                         <div className="card-footer">
                             <small className="text-muted"><TimeAgo date={this.props.arrivalTime} /></small>
@@ -47,7 +47,7 @@ class Message extends React.Component {
                     </Modal.Header>
 
                     <Modal.Body>
-                        <p>{this.props.message}</p>
+                        <p>{this.props.body}</p>
                         <span className="text-muted">From {this.props.name} <TimeAgo date={this.props.arrivalTime} /></span>
                     </Modal.Body>
 

@@ -165,7 +165,7 @@ class App extends Component {
 
   wsIsConnected = () => {
     const { ws } = this.state;
-    return (ws && ws.readyState != WebSocket.CLOSED);
+    return (ws && ws.readyState !== WebSocket.CLOSED);
   };
 
   render() {
