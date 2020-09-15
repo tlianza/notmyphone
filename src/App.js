@@ -74,27 +74,40 @@ class App extends Component {
     return "";
   }
 
-  // Picks up the event url via auth in the cookie (or querystring if testing locally)
-  getEventURL() {
+  getAndCacheAuthKey() {
     const urlParams = new URLSearchParams(window.location.search);
     let auth = urlParams.get('auth');
 
     if ((auth === null || auth.length === 0)) {
       auth = App.getCookie('auth');
+    } else {
+      let date = new Date();
+      date.setDate(date.getDate() + 1); //one day cache in case they need to reload
+      document.cookie = "auth="+auth+"; expires="+date.toGMTString();
+      console.debug("Setting cookie as a backup for the URL");
     }
 
     if ((auth === null || auth.length === 0)) {
       Sentry.captureMessage("No auth found in either param or cookie.");
       console.log("No auth found in either param or cookie.");
+      return null;
     }
+    return auth;
+  }
 
-    return ROOT_EVENT_URL + auth;
+  // Picks up the event url via auth in the cookie (or querystring if testing locally)
+  getEventURL() {
+    return ROOT_EVENT_URL + this.getAndCacheAuthKey();
   }
 
   reconnectTimeout = 250;
 
   componentDidMount() {
-    this.connect();
+    if (null != this.getAndCacheAuthKey()) {
+      this.connect();
+    } else {
+      console.log("Not attempting to connect, since there's no auth.");
+    }
   }
 
   connect = () => {
