@@ -80,11 +80,6 @@ class App extends Component {
 
     if ((auth === null || auth.length === 0)) {
       auth = App.getCookie('auth');
-    } else {
-      let date = new Date();
-      date.setDate(date.getDate() + 1); //one day cache in case they need to reload
-      document.cookie = "auth="+auth+"; expires="+date.toGMTString();
-      console.debug("Setting cookie as a backup for the URL");
     }
 
     if ((auth === null || auth.length === 0)) {
@@ -149,7 +144,8 @@ class App extends Component {
           err.message,
           "Closing socket"
       );
-      Sentry.captureEvent(err);
+      Sentry.captureException(err.exception)
+      console.debug(err);
       that.ws.close();
     };
 
