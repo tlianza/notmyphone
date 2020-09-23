@@ -137,18 +137,6 @@ class App extends Component {
       clearTimeout(connectInterval); // clear Interval on on open of websocket connection
     }
 
-    // websocket onerror event listener
-    this.ws.onerror = err => {
-      console.error(
-          "Socket encountered error: ",
-          err.message,
-          "Closing socket"
-      );
-      Sentry.captureException(err.exception)
-      console.debug(err);
-      that.ws.close();
-    };
-
     this.ws.onclose = e => {
       let nextCheckMs = Math.min(10000, that.reconnectTimeout);
       console.log(
@@ -162,6 +150,17 @@ class App extends Component {
       that.reconnectTimeout = that.reconnectTimeout + that.reconnectTimeout; //increment retry interval
       connectInterval = setTimeout(this.check, nextCheckMs); //call check function after timeout
     }
+
+    // websocket onerror event listener
+    this.ws.onerror = err => {
+      console.error(
+          "Socket encountered error: ",
+          err.message,
+          "Closing socket"
+      );
+      Sentry.captureException(err.exception)
+      that.ws.close();
+    };
   }
 
   /**
