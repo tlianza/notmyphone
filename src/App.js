@@ -112,9 +112,11 @@ class App extends Component {
     // which probably has an event handler attached to it, make sure we don't lose that.
     const { ws } = this.state;
     if (this.wsIsConnected()){
+      console.debug("Websocket is already connected.");
       this.ws = ws; //existing, connected, constructor-created WS
     } else {
       //if there is an existing ws, throw it away but keep its onmessage event
+      console.debug("Websocket is not connected, will create a new one.");
       let onmessageFunc = null;
       if (ws){
         onmessageFunc = ws.onmessage;
@@ -158,7 +160,9 @@ class App extends Component {
           err.message,
           "Closing socket"
       );
-      Sentry.captureException(err.exception)
+      if (err.exception){
+        Sentry.captureException(err.exception);
+      }
       that.ws.close();
     };
   }
