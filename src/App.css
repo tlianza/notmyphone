@@ -19,6 +19,12 @@ body {
   font-family: Orbitron;
 }
 
+@media only screen and (min-width: 768px) {
+  .clock time {
+    font-size: 10em;
+  }
+}
+
 #button-tray {
   margin: 15px;
 }
